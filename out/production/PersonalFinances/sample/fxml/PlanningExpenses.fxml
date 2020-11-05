@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="604.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.PlanningExpensesController">
+   <children>
+      <VBox layoutY="6.0" prefHeight="604.0" prefWidth="840.0">
+         <children>
+            <Separator prefWidth="200.0" />
+            <Label text="%planning.title">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Separator prefWidth="200.0" />
+            <HBox prefHeight="18.0" prefWidth="840.0">
+               <children>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+                  <Label prefHeight="17.0" prefWidth="83.0" text="%description">
+                     <HBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField fx:id="descriptionTextField" prefHeight="27.0" prefWidth="434.0">
+                     <HBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Separator orientation="VERTICAL" prefHeight="200.0">
+                     <HBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </HBox.margin>
+                  </Separator>
+                  <Label prefHeight="17.0" prefWidth="72.0" text="%amount">
+                     <HBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField fx:id="amountTextField">
+                     <HBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Separator orientation="VERTICAL">
+                     <HBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </HBox.margin>
+                  </Separator>
+                  <Button fx:id="addPlanningExpenseButton" mnemonicParsing="false" onAction="#onActionAddPlanningExpense">
+                     <HBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="142.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/add.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Separator orientation="VERTICAL" prefHeight="37.0" prefWidth="0.0">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Separator>
+               </children>
+            </HBox>
+            <Separator prefWidth="840.0">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin></Separator>
+            <TableView fx:id="planningExpenseTableView" editable="true" prefHeight="529.0" prefWidth="840.0">
+              <columns>
+                <TableColumn fx:id="dateColumn" editable="false" prefWidth="84.0" text="%date" />
+                <TableColumn fx:id="descriptionColumn" onEditCommit="#onEditCommitDescription" prefWidth="253.0" sortable="false" text="%description" />
+                  <TableColumn fx:id="amountColumn" editable="false" prefWidth="113.0" text="%amount" />
+                  <TableColumn fx:id="permissionColumn" editable="false" prefWidth="76.0" text="%permission" />
+                  <TableColumn fx:id="commentColumn" editable="false" prefWidth="295.0" sortable="false" text="%comment" />
+              </columns>
+               <contextMenu>
+                  <ContextMenu>
+                    <items>
+                      <MenuItem fx:id="deleteMenuItem" mnemonicParsing="false" onAction="#onActionDeletePlanningExpense" text="%delete.planning.expense" />
+                    </items>
+                  </ContextMenu>
+               </contextMenu>
+            </TableView>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="30.0" left="30.0" right="30.0" />
+   </padding>
+</Pane>

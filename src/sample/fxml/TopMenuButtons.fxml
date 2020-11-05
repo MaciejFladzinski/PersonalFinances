@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox spacing="33.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.TopMenuButtonsController">
+   <children>
+      <ToggleButton mnemonicParsing="false" onAction="#openDebits" prefHeight="60.0" prefWidth="200.0" text="%debits">
+         <toggleGroup>
+            <ToggleGroup fx:id="toggleMainButtons" />
+         </toggleGroup>
+         <graphic>
+            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/debits.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </ToggleButton>
+      <ToggleButton mnemonicParsing="false" onAction="#openCredits" prefHeight="60.0" prefWidth="200.0" text="%credits" toggleGroup="$toggleMainButtons">
+         <graphic>
+            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/credits.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </ToggleButton>
+      <ToggleButton mnemonicParsing="false" onAction="#openPlanningExpenses" prefHeight="60.0" prefWidth="200.0" text="%planningExpenses" toggleGroup="$toggleMainButtons">
+         <graphic>
+            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/planning_expenses.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </ToggleButton>
+      <ToggleButton mnemonicParsing="false" onAction="#openStatistics" prefHeight="60.0" prefWidth="200.0" text="%statistics" toggleGroup="$toggleMainButtons">
+         <graphic>
+            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/statistics.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </ToggleButton>
+      <ToggleButton mnemonicParsing="false" onAction="#openSettings" prefHeight="60.0" prefWidth="200.0" text="%settings" toggleGroup="$toggleMainButtons">
+         <graphic>
+            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/settings.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </ToggleButton>
+   </children>
+   <padding>
+      <Insets left="34.0" right="34.0" top="14.0" />
+   </padding>
+</HBox>

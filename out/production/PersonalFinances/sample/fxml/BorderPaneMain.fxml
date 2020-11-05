@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.MainController">
+   <top>
+      <VBox prefHeight="66.0" prefWidth="1200.0" BorderPane.alignment="TOP_CENTER">
+          <fx:include fx:id="topMenuButtons" source="TopMenuButtons.fxml" />
+      </VBox>
+   </top>
+   <right>
+      <fx:include fx:id="mainFinancialInformations" source="MainFinancialInformations.fxml" BorderPane.alignment="TOP_RIGHT" />
+   </right>
+</BorderPane>

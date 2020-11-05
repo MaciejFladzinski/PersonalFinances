@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="590.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.CreditsController">
+   <children>
+      <VBox prefHeight="590.0" prefWidth="840.0">
+         <children>
+            <Separator prefWidth="600.0" />
+            <HBox prefHeight="37.0" prefWidth="840.0">
+               <children>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+                  <DatePicker fx:id="creditDatePicker">
+                     <HBox.margin>
+                        <Insets bottom="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </DatePicker>
+                  <Separator orientation="VERTICAL" prefHeight="200.0">
+                     <HBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </HBox.margin>
+                  </Separator>
+                  <Label prefHeight="17.0" prefWidth="56.0" text="%amount">
+                     <HBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField fx:id="amountTextField" prefHeight="27.0" prefWidth="69.0">
+                     <HBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Separator orientation="VERTICAL" prefHeight="40.0" prefWidth="0.0">
+                     <HBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </HBox.margin></Separator>
+                  <Label prefHeight="17.0" prefWidth="77.0" text="%description">
+                     <HBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField fx:id="descriptionTextField" prefHeight="27.0" prefWidth="345.0">
+                     <HBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Separator orientation="VERTICAL" prefHeight="37.0" prefWidth="0.0">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin></Separator>
+                  <Button fx:id="addCreditButton" mnemonicParsing="false" onAction="#onActionAddCredit" prefHeight="15.0" prefWidth="15.0">
+                     <HBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/add.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Separator halignment="RIGHT" orientation="VERTICAL" prefHeight="37.0" prefWidth="0.0" />
+               </children>
+            </HBox>
+            <TableView fx:id="creditsTableView" editable="true" prefHeight="526.0" prefWidth="840.0">
+               <columns>
+                  <TableColumn fx:id="dateCreditsColumn" editable="false" prefWidth="97.0" text="%date" />
+                  <TableColumn fx:id="amountCreditsColumn" editable="false" prefWidth="99.0" text="%amount" />
+                  <TableColumn fx:id="descriptionCreditsColumn" onEditCommit="#onEditCommitDescription" prefWidth="626.0" sortType="DESCENDING" sortable="false" text="%description" />
+               </columns>
+               <contextMenu>
+                  <ContextMenu>
+                     <items>
+                        <MenuItem fx:id="deleteMenuItem" mnemonicParsing="false" onAction="#OnActionDeleteCredit" text="%delete.credit" />
+                     </items>
+                  </ContextMenu>
+               </contextMenu>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </TableView>
+            <Separator prefWidth="200.0" />
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="50.0" left="30.0" right="30.0" />
+   </padding>
+</Pane>

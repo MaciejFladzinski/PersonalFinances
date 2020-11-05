@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="604.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.StatisticsController">
+   <children>
+      <VBox layoutY="-6.0" prefHeight="604.0" prefWidth="840.0">
+         <children>
+            <Separator prefWidth="200.0" />
+            <HBox prefHeight="0.0" prefWidth="840.0">
+               <children>
+                  <Separator orientation="VERTICAL" prefHeight="200.0">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </Separator>
+                  <Label prefHeight="17.0" prefWidth="81.0" text="%show.last">
+                     <HBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <ComboBox fx:id="showLastComboBox" prefWidth="130.0">
+                     <HBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </HBox.margin>
+                  </ComboBox>
+                  <Separator orientation="VERTICAL" prefHeight="37.0" prefWidth="2.0">
+                     <HBox.margin>
+                        <Insets left="15.0" right="15.0" />
+                     </HBox.margin>
+                  </Separator>
+                  <Label prefHeight="17.0" prefWidth="42.0" text="%for">
+                     <HBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <ComboBox fx:id="forComboBox" prefHeight="27.0" prefWidth="130.0">
+                     <HBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </HBox.margin>
+                  </ComboBox>
+                  <Separator orientation="VERTICAL" prefHeight="200.0">
+                     <HBox.margin>
+                        <Insets left="15.0" right="15.0" />
+                     </HBox.margin>
+                  </Separator>
+                  <Label prefHeight="17.0" prefWidth="74.0" text="%category">
+                     <HBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <CheckBox fx:id="categoryCheckBox" mnemonicParsing="false">
+                     <HBox.margin>
+                        <Insets bottom="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </CheckBox>
+                  <ComboBox fx:id="categoryComboBox" prefWidth="130.0">
+                     <HBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </HBox.margin>
+                  </ComboBox>
+                  <Separator orientation="VERTICAL" prefHeight="200.0">
+                     <HBox.margin>
+                        <Insets left="15.0" right="15.0" />
+                     </HBox.margin>
+                  </Separator>
+                  <Button fx:id="showButton" mnemonicParsing="false" onAction="#onActionShowLineChart" prefHeight="27.0" prefWidth="83.0" text="%show">
+                     <HBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0" />
+            <LineChart fx:id="statisticsLineChart" prefHeight="562.0" prefWidth="840.0">
+              <xAxis>
+                <CategoryAxis fx:id="timeAxis" side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis fx:id="amountAxis" side="LEFT" />
+              </yAxis>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </LineChart>
+         </children></VBox>
+   </children>
+</Pane>
