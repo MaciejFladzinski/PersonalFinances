@@ -5,7 +5,6 @@ import javafx.scene.layout.BorderPane;
 import sample.utils.FxmlUtils;
 
 public class MainController {
-
     @FXML
     private BorderPane borderPane;
 

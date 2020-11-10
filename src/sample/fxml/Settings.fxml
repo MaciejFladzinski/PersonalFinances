@@ -20,7 +20,7 @@
             </Label>
             <HBox>
                <children>
-                  <ToggleButton mnemonicParsing="false" onAction="#setCaspian" prefHeight="30.0" prefWidth="100.0" text="%caspian">
+                  <ToggleButton fx:id="caspianToggleButton" mnemonicParsing="false" onAction="#setCaspian" prefHeight="30.0" prefWidth="100.0" text="%caspian">
                      <HBox.margin>
                         <Insets left="270.0" right="50.0" top="30.0" />
                      </HBox.margin>
@@ -28,7 +28,7 @@
                         <ToggleGroup fx:id="caspian_modena" />
                      </toggleGroup>
                   </ToggleButton>
-                  <ToggleButton mnemonicParsing="false" onAction="#setModena" prefHeight="30.0" prefWidth="100.0" text="%modena" toggleGroup="$caspian_modena">
+                  <ToggleButton fx:id="modenaToggleButton" mnemonicParsing="false" onAction="#setModena" prefHeight="30.0" prefWidth="100.0" text="%modena" toggleGroup="$caspian_modena">
                      <HBox.margin>
                         <Insets left="50.0" right="270.0" top="30.0" />
                      </HBox.margin>

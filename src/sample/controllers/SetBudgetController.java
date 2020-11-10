@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import sample.database.modelFx.SetBudgetModel;
+import sample.database.modelFx.SettingsModel;
 import sample.utils.DialogUtils;
 import sample.utils.FxmlUtils;
 
@@ -22,11 +23,20 @@ public class SetBudgetController {
     private Button skipSetBudgetButton;
 
     private SetBudgetModel setBudgetModel;
+    private SettingsModel settingsModel;
     public static final String BORDER_PANE_MAIN_FXML = "/sample/fxml/BorderPaneMain.fxml";
 
     @FXML
     public void initialize() {
         this.setBudgetModel = new SetBudgetModel();
+
+        this.settingsModel = new SettingsModel();
+        try {
+            settingsModel.init();
+        } catch (SQLException e) {
+            DialogUtils.errorDialog(e.getMessage());
+        }
+
         bindings();
     }
 
