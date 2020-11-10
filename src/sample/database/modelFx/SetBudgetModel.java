@@ -77,6 +77,16 @@ public class SetBudgetModel {
         DbManager.closeConnectionSource();
     }
 
+    public void addMonthlyIncomeToAccountBalanceInDataBase() throws SQLException {
+        Dao<SetBudget, Integer> dao = DaoManager.createDao(DbManager.getConnectionSource(), SetBudget.class);
+
+        SetBudget setBudget = dao.queryForId(1);
+        double oldAccountBalance = setBudget.getAccountBalance();
+        setBudget.setAccountBalance(Double.parseDouble(this.decimalFormat.format(oldAccountBalance + getMonthlyIncomeFromDataBase())));
+        dao.update(setBudget);
+        DbManager.closeConnectionSource();
+    }
+
     public boolean checkIfBudgetIsSet() throws SQLException {
         Dao<SetBudget, Integer> dao = DaoManager.createDao(DbManager.getConnectionSource(), SetBudget.class);
         SetBudget setBudget = dao.queryForId(1);

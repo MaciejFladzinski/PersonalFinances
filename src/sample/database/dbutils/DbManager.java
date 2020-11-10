@@ -59,6 +59,7 @@ public class DbManager {
             TableUtils.createTableIfNotExists(connectionSource, PlanningExpenses.class);
             TableUtils.createTableIfNotExists(connectionSource, SetBudget.class);
             TableUtils.createTableIfNotExists(connectionSource, MonthlyExpenses.class);
+            TableUtils.createTableIfNotExists(connectionSource, AddMonthlyIncome.class);
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
         }
@@ -72,6 +73,7 @@ public class DbManager {
             TableUtils.dropTable(connectionSource, PlanningExpenses.class, true);
             TableUtils.dropTable(connectionSource, SetBudget.class, true);
             TableUtils.dropTable(connectionSource, MonthlyExpenses.class, true);
+            TableUtils.dropTable(connectionSource, AddMonthlyIncome.class, true);
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
         }

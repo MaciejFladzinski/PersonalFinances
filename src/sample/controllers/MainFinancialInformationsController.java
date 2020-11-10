@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import sample.database.dbutils.DbManager;
+import sample.database.modelFx.AddMonthlyIncomeModel;
 import sample.database.modelFx.MonthlyExpensesModel;
 import sample.database.modelFx.PlanningExpensesModel;
 import sample.database.modelFx.SetBudgetModel;
@@ -45,15 +46,30 @@ public class MainFinancialInformationsController {
     private SetBudgetModel setBudgetModel;
     private MonthlyExpensesModel monthlyExpensesModel;
     private PlanningExpensesModel planningExpensesModel;
+    private AddMonthlyIncomeModel addMonthlyIncomeModel;
 
     @FXML
     public void initialize() {
         this.setBudgetModel = new SetBudgetModel();
         this.monthlyExpensesModel = new MonthlyExpensesModel();
         this.planningExpensesModel = new PlanningExpensesModel();
+        this.addMonthlyIncomeModel = new AddMonthlyIncomeModel();
 
-        initAll();
         bindings();
+        initAll();
+    }
+
+    private void bindings() {
+        this.editAccountBalanceButton.disableProperty().bind(editFinancialInfoTextField.textProperty().isEmpty());
+        this.editMonthlyIncomeButton.disableProperty().bind(editFinancialInfoTextField.textProperty().isEmpty());
+    }
+
+    private void initAll() {
+        addMonthlyIncomeModel.addMonthlyIncome();
+        initBudgetInfo();
+        initMonthlyExpenses();
+        initAverageOfMonthlyExpenses();
+        initSumOfPlanningExpenses();
     }
 
     private void initBudgetInfo() {
@@ -104,21 +120,9 @@ public class MainFinancialInformationsController {
         }
     }
 
-    private void bindings() {
-        this.editAccountBalanceButton.disableProperty().bind(editFinancialInfoTextField.textProperty().isEmpty());
-        this.editMonthlyIncomeButton.disableProperty().bind(editFinancialInfoTextField.textProperty().isEmpty());
-    }
-
     @FXML
     public void onActionRefresh() {
         initAll();
-    }
-
-    private void initAll() {
-        initBudgetInfo();
-        initMonthlyExpenses();
-        initAverageOfMonthlyExpenses();
-        initSumOfPlanningExpenses();
     }
 
     @FXML
