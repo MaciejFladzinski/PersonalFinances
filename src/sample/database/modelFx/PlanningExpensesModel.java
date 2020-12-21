@@ -23,6 +23,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class PlanningExpensesModel {
 
+    LoginModel loginModel = new LoginModel();
+
     private ObservableList<PlanningExpensesFx> planningExpensesFxObservableList = FXCollections.observableArrayList();
 
     private ObjectProperty<PlanningExpensesFx> planningExpensesFxObjectProperty = new SimpleObjectProperty<>(new PlanningExpensesFx());
@@ -31,15 +33,17 @@ public class PlanningExpensesModel {
     private SetBudgetModel setBudgetModel;
     private MonthlyExpensesModel monthlyExpensesModel;
 
-    public void init() throws ApplicationException {
+    public void init() throws SQLException {
         this.setBudgetModel = new SetBudgetModel();
         this.monthlyExpensesModel = new MonthlyExpensesModel();
 
-        PlanningExpensesDao planningExpensesDao = new PlanningExpensesDao();
-
-        List<PlanningExpenses> planningExpensesList = planningExpensesDao.queryForAll(PlanningExpenses.class);
+        Dao<PlanningExpenses, Integer> planningExpensesDao = DaoManager.createDao(DbManager.getConnectionSource(), PlanningExpenses.class);
+        QueryBuilder<PlanningExpenses, Integer> planningExpensesQueryBuilder = planningExpensesDao.queryBuilder();
+        planningExpensesQueryBuilder.where().eq("username", this.loginModel.getLoggedUserFromDataBase());
+        PreparedQuery<PlanningExpenses> preparePlanningExpenses = planningExpensesQueryBuilder.prepare();
+        List<PlanningExpenses> planningExpenses = planningExpensesDao.query(preparePlanningExpenses);
         this.planningExpensesFxObservableList.clear();
-        planningExpensesList.forEach(planningExpense -> {
+        planningExpenses.forEach(planningExpense -> {
             PlanningExpensesFx planningExpensesFx = PlanningExpensesConverter.convertToPlanningExpensesFx(planningExpense);
             planningExpensesFx.setPermissionProperty(calculateForPermission(planningExpensesFx.getAmountProperty()));
             planningExpensesFx.setCommentProperty(calculateForComment(planningExpensesFx.getAmountProperty()));
@@ -47,7 +51,7 @@ public class PlanningExpensesModel {
         });
     }
 
-    public void savePlanningExpenseInDataBase() throws ApplicationException {
+    public void savePlanningExpenseInDataBase() throws ApplicationException, SQLException {
         PlanningExpensesDao planningExpensesDao = new PlanningExpensesDao();
         PlanningExpenses planningExpenses = PlanningExpensesConverter.convertToPlanningExpenses(this.getPlanningExpensesFxObjectProperty());
         planningExpenses.setPermission(calculateForPermission(planningExpenses.getAmount()));
@@ -125,7 +129,7 @@ public class PlanningExpensesModel {
         }
     }
 
-    public void updateDescriptionInDataBase(String description) throws ApplicationException {
+    public void updateDescriptionInDataBase(String description) throws ApplicationException, SQLException {
         PlanningExpensesDao planningExpensesDao = new PlanningExpensesDao();
         PlanningExpenses tempPlanningExpenses = planningExpensesDao.findById(PlanningExpenses.class, this.getPlanningExpensesFxObjectPropertyEdit().getIdProperty());
         tempPlanningExpenses.setDescription(description);
@@ -133,21 +137,21 @@ public class PlanningExpensesModel {
         init();
     }
 
-    public void deletePlanningExpenseInDataBase() throws ApplicationException {
+    public void deletePlanningExpenseInDataBase() throws ApplicationException, SQLException {
         PlanningExpensesDao planningExpensesDao = new PlanningExpensesDao();
         planningExpensesDao.deleteById(PlanningExpenses.class, this.getPlanningExpensesFxObjectPropertyEdit().getIdProperty());
         init();
     }
 
     public double getSumOfPlanningExpenses() throws SQLException {
-        Dao<PlanningExpenses, Integer> dao = DaoManager.createDao(DbManager.getConnectionSource(), PlanningExpenses.class);
+        Dao<PlanningExpenses, Integer> planningExpensesDao = DaoManager.createDao(DbManager.getConnectionSource(), PlanningExpenses.class);
         AtomicReference<Double> sum = new AtomicReference<>((double) 0);
-        QueryBuilder<PlanningExpenses, Integer> expensesQueryBuilder = dao.queryBuilder();
-        expensesQueryBuilder.selectColumns("amount");
-        PreparedQuery<PlanningExpenses> prepareExpenses = expensesQueryBuilder.prepare();
-        List<PlanningExpenses> expenses = dao.query(prepareExpenses);
-        expenses.forEach(e -> {
-            sum.updateAndGet(v -> new Double(v + e.getAmount()));
+        QueryBuilder<PlanningExpenses, Integer> planningExpensesQueryBuilder = planningExpensesDao.queryBuilder();
+        planningExpensesQueryBuilder.where().eq("username", this.loginModel.getLoggedUserFromDataBase());
+        PreparedQuery<PlanningExpenses> prepareExpenses = planningExpensesQueryBuilder.prepare();
+        List<PlanningExpenses> planningExpenses = planningExpensesDao.query(prepareExpenses);
+        planningExpenses.forEach(planningExpense -> {
+            sum.updateAndGet(v -> new Double(v + planningExpense.getAmount()));
         });
         DbManager.closeConnectionSource();
         return sum.get();

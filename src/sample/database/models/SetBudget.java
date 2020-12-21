@@ -3,14 +3,17 @@ package sample.database.models;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "set budget")
+@DatabaseTable(tableName = "set_budget")
 public class SetBudget implements BaseModel{
 
     public SetBudget() {
     }
 
-    @DatabaseField(canBeNull = false, id = true)
+    @DatabaseField(generatedId = true)
     private int id;
+
+    @DatabaseField(canBeNull = false)
+    private String username;
 
     @DatabaseField(columnName = "account balance", canBeNull = false)
     private double accountBalance;
@@ -24,6 +27,14 @@ public class SetBudget implements BaseModel{
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public double getAccountBalance() {

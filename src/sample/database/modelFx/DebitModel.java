@@ -1,21 +1,28 @@
 package sample.database.modelFx;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import sample.database.dao.CategoryDao;
 import sample.database.dao.DebitDao;
+import sample.database.dbutils.DbManager;
 import sample.database.models.Category;
 import sample.database.models.Debit;
 import sample.utils.converters.CategoryConverter;
 import sample.utils.converters.DebitConverter;
 import sample.utils.exceptions.ApplicationException;
 
-import java.util.Date;
+import java.sql.SQLException;
 import java.util.List;
 
 public class DebitModel {
+
+    LoginModel loginModel = new LoginModel();
 
     private ObservableList<DebitFx> debitFxObservableList = FXCollections.observableArrayList();
     private ObservableList<CategoryFx> categoryFxObservableList = FXCollections.observableArrayList();
@@ -23,11 +30,14 @@ public class DebitModel {
     private ObjectProperty<DebitFx> debitFxObjectProperty = new SimpleObjectProperty<>(new DebitFx());
     private ObjectProperty<DebitFx> debitFxObjectPropertyEdit = new SimpleObjectProperty<>(new DebitFx());
 
-    public void init() throws ApplicationException {
+    public void init() throws SQLException {
         initCategoryList();
-        DebitDao debitDao = new DebitDao();
 
-        List<Debit> debits = debitDao.queryForAll(Debit.class);
+        Dao<Debit, Integer> debitDao = DaoManager.createDao(DbManager.getConnectionSource(), Debit.class);
+        QueryBuilder<Debit, Integer> usernameQueryBuilder = debitDao.queryBuilder();
+        usernameQueryBuilder.where().eq("username", this.loginModel.getLoggedUserFromDataBase());
+        PreparedQuery<Debit> prepareDebits = usernameQueryBuilder.prepare();
+        List<Debit> debits = debitDao.query(prepareDebits);
         this.debitFxObservableList.clear();
         debits.forEach(debit -> {
             DebitFx debitFx = DebitConverter.convertToDebitFX(debit);
@@ -35,18 +45,20 @@ public class DebitModel {
         });
     }
 
-    private void initCategoryList() throws ApplicationException {
-        CategoryDao categoryDao = new CategoryDao();
-
-        List<Category> categoryList = categoryDao.queryForAll(Category.class);
+    private void initCategoryList() throws SQLException {
+        Dao<Category, Integer> categoryDao = DaoManager.createDao(DbManager.getConnectionSource(), Category.class);
+        QueryBuilder<Category, Integer> usernameQueryBuilder = categoryDao.queryBuilder();
+        usernameQueryBuilder.where().eq("username", this.loginModel.getLoggedUserFromDataBase());
+        PreparedQuery<Category> prepareCategories = usernameQueryBuilder.prepare();
+        List<Category> categories = categoryDao.query(prepareCategories);
         this.categoryFxObservableList.clear();
-        categoryList.forEach(category -> {
+        categories.forEach(category -> {
             CategoryFx categoryFx = CategoryConverter.convertToCategoryFx(category);
             this.categoryFxObservableList.add(categoryFx);
         });
     }
 
-    public void saveDebitInDataBase() throws ApplicationException {
+    public void saveDebitInDataBase() throws ApplicationException, SQLException {
         Debit debit = DebitConverter.convertToDebit(this.getDebitFxObjectProperty());
 
         CategoryDao categoryDao = new CategoryDao();
@@ -58,7 +70,7 @@ public class DebitModel {
         init();
     }
 
-    public void updateDescriptionInDataBase(String description) throws ApplicationException {
+    public void updateDescriptionInDataBase(String description) throws ApplicationException, SQLException {
         DebitDao debitDao = new DebitDao();
 
         Debit tempDebit = debitDao.findById(Debit.class, getDebitFxObjectPropertyEdit().getIdProperty());
@@ -67,7 +79,7 @@ public class DebitModel {
         init();
     }
 
-    public void deleteDebitFromDataBase() throws ApplicationException {
+    public void deleteDebitFromDataBase() throws ApplicationException, SQLException {
         DebitDao debitDao = new DebitDao();
         debitDao.deleteById(Debit.class, this.getDebitFxObjectPropertyEdit().getIdProperty());
         init();

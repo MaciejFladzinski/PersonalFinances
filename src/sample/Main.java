@@ -11,8 +11,7 @@ import java.util.Locale;
 
 public class Main extends Application {
 
-    public static final String BORDER_PANE_MAIN_FXML = "/sample/fxml/BorderPaneMain.fxml";
-    public static final String SET_BUDGET_FXML = "/sample/fxml/SetBudget.fxml";
+    public static final String LOGIN_FXML = "/sample/fxml/Login.fxml";
 
     @Override
     public void init() throws Exception {
@@ -24,7 +23,7 @@ public class Main extends Application {
 
         Locale.setDefault(new Locale("en"));
 
-        Pane borderPane = FxmlUtils.fxmlLoader(SET_BUDGET_FXML);
+        Pane borderPane = FxmlUtils.fxmlLoader(LOGIN_FXML);
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Personal Finances");

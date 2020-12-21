@@ -16,12 +16,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import sample.database.dao.CategoryDao;
-import sample.database.dao.CreditDao;
-import sample.database.dao.DebitDao;
 import sample.database.dbutils.DbManager;
 import sample.database.modelFx.CategoryFx;
 import sample.database.modelFx.CategoryModel;
 import sample.database.modelFx.CreditModel;
+import sample.database.modelFx.LoginModel;
 import sample.database.models.Category;
 import sample.database.models.Credit;
 import sample.database.models.Debit;
@@ -61,6 +60,7 @@ public class StatisticsController {
     // models
     private CategoryModel categoryModel;
     private CreditModel creditModel;
+    private LoginModel loginModel;
 
     static ResourceBundle bundle = FxmlUtils.getResourceBundle();
 
@@ -74,11 +74,12 @@ public class StatisticsController {
         this.categoryModel = new CategoryModel();
         try {
             categoryModel.init();
-        } catch (ApplicationException e) {
+        } catch (SQLException e) {
             DialogUtils.errorDialog(e.getMessage());
         }
 
         this.creditModel = new CreditModel();
+        this.loginModel = new LoginModel();
 
         bindings();
     }
@@ -165,7 +166,7 @@ public class StatisticsController {
                 return bundle.getString("statistics.debits.year");
             }
         } else if (this.showLastComboBox.getValue() == bundle.getString("statistics.from.beginning")) {
-            DebitDao debitDao = new DebitDao();
+            Dao<Debit, Integer> debitDao = DaoManager.createDao(DbManager.getConnectionSource(), Debit.class);
 
             if (categoryCheckBox.isSelected() && !categoryComboBox.getValue().getName().isEmpty()) {
                 CategoryDao categoryDao = new CategoryDao();
@@ -174,19 +175,23 @@ public class StatisticsController {
                 AtomicInteger categoryId = new AtomicInteger();
 
                 categories.forEach(c -> {
-                    if (c.getCategory().equals(categoryComboBox.getValue().getName())) {
-                        categoryId.set(c.getId());
+                    try {
+                        if (c.getCategory().equals(categoryComboBox.getValue().getName()) &&
+                                c.getUsername().equals(this.loginModel.getLoggedUserFromDataBase())) {
+                            categoryId.set(c.getId());
+                        }
+                    } catch (SQLException e) {
+                        DialogUtils.errorDialog(e.getMessage());
                     }
                 });
 
                 Category choosedCategory = categoryDao.findById(Category.class, categoryId.get());
                 String categoryName = choosedCategory.getCategory();
 
-                Dao<Debit, Integer> dao = DaoManager.createDao(DbManager.getConnectionSource(), Debit.class);
-                QueryBuilder<Debit, Integer> debitQueryBuilder = dao.queryBuilder();
+                QueryBuilder<Debit, Integer> debitQueryBuilder = debitDao.queryBuilder();
                 debitQueryBuilder.where().eq("category_id", categoryId);
                 PreparedQuery<Debit> debitPreparedQuery = debitQueryBuilder.prepare();
-                List<Debit> categoryDebits = dao.query(debitPreparedQuery);
+                List<Debit> categoryDebits = debitDao.query(debitPreparedQuery);
 
                 categoryDebits.forEach(categoryDebit -> {
                     String formattedDate = formatter.format(Utils.convertToLocalDate(categoryDebit.getDate()));
@@ -195,7 +200,10 @@ public class StatisticsController {
                 return bundle.getString("statistics.debits.from.beginning") + " " +
                         bundle.getString("statistics.for.category") + " " + categoryName;
             } else {
-                List<Debit> debits = debitDao.queryForAll(Debit.class);
+                QueryBuilder<Debit, Integer> debitQueryBuilder = debitDao.queryBuilder();
+                debitQueryBuilder.where().eq("username", this.loginModel.getLoggedUserFromDataBase());
+                PreparedQuery<Debit> prepareDebits = debitQueryBuilder.prepare();
+                List<Debit> debits = debitDao.query(prepareDebits);
                 debits.forEach(d -> {
                     String formattedDate = formatter.format(Utils.convertToLocalDate(d.getDate()));
                     addData(data, formattedDate, d.getAmount());
@@ -229,22 +237,33 @@ public class StatisticsController {
             AtomicInteger categoryId = new AtomicInteger();
 
             categories.forEach(c -> {
-                if (c.getCategory().equals(categoryComboBox.getValue().getName())) {
-                    categoryId.set(c.getId());
+                try {
+                    if (c.getCategory().equals(categoryComboBox.getValue().getName()) &&
+                            c.getUsername().equals(this.loginModel.getLoggedUserFromDataBase())) {
+                        categoryId.set(c.getId());
+                    }
+                } catch (SQLException e) {
+                    DialogUtils.errorDialog(e.getMessage());
                 }
             });
 
             debits.forEach(debit -> {
-                if (debit.getCategory().getId() == categoryId.get()) {
-                    String formattedDate = formatter.format(Utils.convertToLocalDate(debit.getDate()));
-                    addData(data, formattedDate, debit.getAmount());
-                }
+                    if (debit.getCategory().getId() == categoryId.get()) {
+                        String formattedDate = formatter.format(Utils.convertToLocalDate(debit.getDate()));
+                        addData(data, formattedDate, debit.getAmount());
+                    }
             });
         } else {
-            for (Debit d : debits) {
-                String formattedDate = formatter.format(Utils.convertToLocalDate(d.getDate()));
-                addData(data, formattedDate, d.getAmount());
-            }
+            debits.forEach(debit -> {
+                try {
+                    if (debit.getUsername().equals(this.loginModel.getLoggedUserFromDataBase())) {
+                        String formattedDate = formatter.format(Utils.convertToLocalDate(debit.getDate()));
+                        addData(data, formattedDate, debit.getAmount());
+                    }
+                } catch (SQLException e) {
+                    DialogUtils.errorDialog(e.getMessage());
+                }
+            });
             DbManager.closeConnectionSource();
         }
     }
@@ -267,9 +286,11 @@ public class StatisticsController {
             getCreditXMonthsFromDataBase(12);
             return bundle.getString("statistics.credits.year");
         } else if (this.showLastComboBox.getValue() == bundle.getString("statistics.from.beginning")) {
-            CreditDao creditDao = new CreditDao();
-
-            List<Credit> credits = creditDao.queryForAll(Credit.class);
+            Dao<Credit, Integer> creditDao = DaoManager.createDao(DbManager.getConnectionSource(), Credit.class);
+            QueryBuilder<Credit, Integer> creditQueryBuilder = creditDao.queryBuilder();
+            creditQueryBuilder.where().eq("username", this.loginModel.getLoggedUserFromDataBase());
+            PreparedQuery<Credit> prepareCredits = creditQueryBuilder.prepare();
+            List<Credit> credits = creditDao.query(prepareCredits);
             credits.forEach(c -> {
                 String formattedDate = formatter.format(Utils.convertToLocalDate(c.getDate()));
                 addData(data, formattedDate, c.getAmount());
@@ -288,10 +309,15 @@ public class StatisticsController {
         creditQueryBuilder.where().between("date", from, now);
         PreparedQuery<Credit> creditPreparedQuery = creditQueryBuilder.prepare();
         List<Credit> credits = dao.query(creditPreparedQuery);
-
         credits.forEach(c -> {
-            String formattedDate = formatter.format(Utils.convertToLocalDate(c.getDate()));
-            addData(data, formattedDate, c.getAmount());
+            try {
+                if (c.getUsername().equals(this.loginModel.getLoggedUserFromDataBase())) {
+                    String formattedDate = formatter.format(Utils.convertToLocalDate(c.getDate()));
+                    addData(data, formattedDate, c.getAmount());
+                }
+            } catch (SQLException e) {
+                DialogUtils.errorDialog(e.getMessage());
+            }
         });
         DbManager.closeConnectionSource();
     }
@@ -305,6 +331,6 @@ public class StatisticsController {
                     data.add(newData);
                     return newData;
                 });
-        dataAtDate.setYValue(value);
+        dataAtDate.setYValue(dataAtDate.getYValue() + value);
     }
 }

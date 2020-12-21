@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class AddMonthlyIncomeModel {
 
     SetBudgetModel setBudgetModel = new SetBudgetModel();
+    LoginModel loginModel = new LoginModel();
 
     public void init() {
 
@@ -28,13 +29,20 @@ public class AddMonthlyIncomeModel {
             addMonthlyIncomeDao = DaoManager.createDao(DbManager.getConnectionSource(), AddMonthlyIncome.class);
             List<AddMonthlyIncome> addMonthlyIncomeList = addMonthlyIncomeDao.queryForAll();
             addMonthlyIncomeList.forEach(monthlyIncome -> {
-                if (monthlyIncome.getYear() == actualYear && monthlyIncome.getMonth() == actualMonth && monthlyIncome.isAdd()) {
-                    exist.set(true);
+                try {
+                    if (monthlyIncome.getYear() == actualYear && monthlyIncome.getMonth() == actualMonth &&
+                            monthlyIncome.isAdd() &&
+                            monthlyIncome.getUsername().equals(this.loginModel.getLoggedUserFromDataBase())) {
+                        exist.set(true);
+                    }
+                } catch (SQLException e) {
+                    DialogUtils.errorDialog(e.getMessage());
                 }
             });
 
             if (!exist.get()) {
                 AddMonthlyIncome addMonthlyIncome = new AddMonthlyIncome();
+                addMonthlyIncome.setUsername(this.loginModel.getLoggedUserFromDataBase());
                 addMonthlyIncome.setYear(actualYear);
                 addMonthlyIncome.setMonth(actualMonth);
                 addMonthlyIncome.setAdd(true);

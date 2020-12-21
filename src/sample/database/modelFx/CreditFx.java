@@ -7,6 +7,7 @@ import java.time.LocalDate;
 public class CreditFx {
 
     private IntegerProperty idProperty = new SimpleIntegerProperty();
+    private SimpleStringProperty usernameProperty = new SimpleStringProperty();
     private ObjectProperty<LocalDate> addedDateProperty = new SimpleObjectProperty<>(LocalDate.now());
     private SimpleDoubleProperty amountProperty = new SimpleDoubleProperty();
     private SimpleStringProperty descriptionProperty = new SimpleStringProperty();
@@ -21,6 +22,18 @@ public class CreditFx {
 
     public void setIdProperty(int idProperty) {
         this.idProperty.set(idProperty);
+    }
+
+    public String getUsernameProperty() {
+        return usernameProperty.get();
+    }
+
+    public SimpleStringProperty usernamePropertyProperty() {
+        return usernameProperty;
+    }
+
+    public void setUsernameProperty(String usernameProperty) {
+        this.usernameProperty.set(usernameProperty);
     }
 
     public LocalDate getAddedDateProperty() {

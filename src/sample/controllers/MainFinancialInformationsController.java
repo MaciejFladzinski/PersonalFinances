@@ -2,24 +2,30 @@ package sample.controllers;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import sample.database.dbutils.DbManager;
-import sample.database.modelFx.AddMonthlyIncomeModel;
-import sample.database.modelFx.MonthlyExpensesModel;
-import sample.database.modelFx.PlanningExpensesModel;
-import sample.database.modelFx.SetBudgetModel;
+import sample.database.modelFx.*;
 import sample.database.models.MonthlyExpenses;
 import sample.database.models.SetBudget;
 import sample.utils.DialogUtils;
+import sample.utils.FxmlUtils;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public class MainFinancialInformationsController {
 
+    public static final String LOGIN_FXML = "/sample/fxml/Login.fxml";
+
+    @FXML
+    private Label usernameInfoLabel;
     @FXML
     private Label accountBalanceLabel;
     @FXML
@@ -41,12 +47,15 @@ public class MainFinancialInformationsController {
     @FXML
     private Button refreshButton;
     @FXML
+    private Button logoutButton;
+    @FXML
     private Button quitButton;
 
     private SetBudgetModel setBudgetModel;
     private MonthlyExpensesModel monthlyExpensesModel;
     private PlanningExpensesModel planningExpensesModel;
     private AddMonthlyIncomeModel addMonthlyIncomeModel;
+    private LoginModel loginModel;
 
     @FXML
     public void initialize() {
@@ -54,6 +63,7 @@ public class MainFinancialInformationsController {
         this.monthlyExpensesModel = new MonthlyExpensesModel();
         this.planningExpensesModel = new PlanningExpensesModel();
         this.addMonthlyIncomeModel = new AddMonthlyIncomeModel();
+        this.loginModel = new LoginModel();
 
         bindings();
         initAll();
@@ -65,23 +75,37 @@ public class MainFinancialInformationsController {
     }
 
     private void initAll() {
+        initUsernameInfo();
         addMonthlyIncomeModel.addMonthlyIncome();
-        initBudgetInfo();
+        try {
+            initBudgetInfo();
+        } catch (SQLException e) {
+            DialogUtils.errorDialog(e.getMessage());
+        }
         initMonthlyExpenses();
         initAverageOfMonthlyExpenses();
         initSumOfPlanningExpenses();
     }
 
-    private void initBudgetInfo() {
-        Dao<SetBudget, Integer> budgetDao = null;
+    public void initUsernameInfo() {
         try {
-            budgetDao = DaoManager.createDao(DbManager.getConnectionSource(), SetBudget.class);
-            this.accountBalanceLabel.setText(String.valueOf(budgetDao.queryForId(1).getAccountBalance()));
-            this.monthlyIncomeLabel.setText(String.valueOf(budgetDao.queryForId(1).getMonthlyIncome()));
-            DbManager.closeConnectionSource();
+            this.usernameInfoLabel.setText(this.loginModel.getLoggedUserFromDataBase());
         } catch (SQLException e) {
             DialogUtils.errorDialog(e.getMessage());
         }
+    }
+
+    private void initBudgetInfo() throws SQLException {
+        Dao<SetBudget, Integer> setBudgetDao = DaoManager.createDao(DbManager.getConnectionSource(), SetBudget.class);
+        QueryBuilder<SetBudget, Integer> setBudgetQueryBuilder = setBudgetDao.queryBuilder();
+        setBudgetQueryBuilder.where().eq("username", this.loginModel.getLoggedUserFromDataBase());
+        PreparedQuery<SetBudget> prepareSetBudget = setBudgetQueryBuilder.prepare();
+        List<SetBudget> setBudgets = setBudgetDao.query(prepareSetBudget);
+        setBudgets.forEach(s -> {
+            this.accountBalanceLabel.setText(String.valueOf(s.getAccountBalance()));
+            this.monthlyIncomeLabel.setText(String.valueOf(s.getMonthlyIncome()));
+        });
+        DbManager.closeConnectionSource();
     }
 
     private void initMonthlyExpenses() {
@@ -136,7 +160,11 @@ public class MainFinancialInformationsController {
             }
         }
         clearEditBudget();
-        initBudgetInfo();
+        try {
+            initBudgetInfo();
+        } catch (SQLException e) {
+            DialogUtils.errorDialog(e.getMessage());
+        }
     }
 
     @FXML
@@ -150,12 +178,22 @@ public class MainFinancialInformationsController {
             }
         }
         clearEditBudget();
-        initBudgetInfo();
+        try {
+            initBudgetInfo();
+        } catch (SQLException e) {
+            DialogUtils.errorDialog(e.getMessage());
+        }
     }
 
     private void clearEditBudget() {
         confirmCheckBox.setSelected(false);
         editFinancialInfoTextField.clear();
+    }
+
+    @FXML
+    public void onActionLogout(ActionEvent actionEvent) {
+        FxmlUtils.newSceneFxmlLoader(LOGIN_FXML);
+        FxmlUtils.closeStage(actionEvent);
     }
 
     @FXML

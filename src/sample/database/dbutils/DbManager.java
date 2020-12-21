@@ -13,9 +13,11 @@ public class DbManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DbManager.class);
 
-    private static final String JDBC_DRIVER_HD = "jdbc:sqlite:database.db";
-    //private static final String USER = "";
-    //private static final String PASSWORD = "";
+    //private static final String JDBC_DRIVER_HD = "jdbc:sqlite:database.db";
+
+    private static final String URL = "jdbc:mysql://77.79.251.52/pawelskie_personal";
+    private static final String USER = "pawelskie_pers";
+    private static final String PASSWORD = "Jbe231fdA!";
 
     private static ConnectionSource connectionSource;
 
@@ -28,7 +30,7 @@ public class DbManager {
 
     private static void createConnectionSource() {
         try {
-            connectionSource = new JdbcConnectionSource(JDBC_DRIVER_HD);
+            connectionSource = new JdbcConnectionSource(URL, USER, PASSWORD);
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
         }
@@ -61,6 +63,8 @@ public class DbManager {
             TableUtils.createTableIfNotExists(connectionSource, MonthlyExpenses.class);
             TableUtils.createTableIfNotExists(connectionSource, AddMonthlyIncome.class);
             TableUtils.createTableIfNotExists(connectionSource, Settings.class);
+            TableUtils.createTableIfNotExists(connectionSource, Users.class);
+            TableUtils.createTableIfNotExists(connectionSource, LoggedUser.class);
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
         }
@@ -76,6 +80,8 @@ public class DbManager {
             TableUtils.dropTable(connectionSource, MonthlyExpenses.class, true);
             TableUtils.dropTable(connectionSource, AddMonthlyIncome.class, true);
             TableUtils.dropTable(connectionSource, Settings.class, true);
+            TableUtils.dropTable(connectionSource, Users.class, true);
+            TableUtils.dropTable(connectionSource, LoggedUser.class, true);
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
         }

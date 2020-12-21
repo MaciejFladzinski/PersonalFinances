@@ -15,6 +15,9 @@ public class Credit implements BaseModel{
     @DatabaseField(generatedId = true)
     private int id;
 
+    @DatabaseField(canBeNull = false)
+    private String username;
+
     @DatabaseField(format = "yyyy.MM.dd")
     private Date date;
 
@@ -30,6 +33,14 @@ public class Credit implements BaseModel{
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Date getDate() {

@@ -47,6 +47,46 @@ public class DialogUtils {
         errorAlert.showAndWait();
     }
 
+    public static void userCreatedDialog() {
+        Alert informationAlert = new Alert(Alert.AlertType.INFORMATION);
+        informationAlert.setTitle(bundle.getString("create.account.title"));
+        informationAlert.setHeaderText(bundle.getString("create.account.header"));
+        informationAlert.setContentText(bundle.getString("create.account.content"));
+        informationAlert.showAndWait();
+    }
+
+    public static void changeFirstNameDialog() {
+        Alert informationAlert = new Alert(Alert.AlertType.INFORMATION);
+        informationAlert.setTitle(bundle.getString("edit.account"));
+        informationAlert.setHeaderText(bundle.getString("change.first.name.header"));
+        informationAlert.setContentText(bundle.getString("change.content"));
+        informationAlert.showAndWait();
+    }
+
+    public static void changeLastNameDialog() {
+        Alert informationAlert = new Alert(Alert.AlertType.INFORMATION);
+        informationAlert.setTitle(bundle.getString("edit.account"));
+        informationAlert.setHeaderText(bundle.getString("change.last.name.header"));
+        informationAlert.setContentText(bundle.getString("change.content"));
+        informationAlert.showAndWait();
+    }
+
+    public static void changeUsernameDialog() {
+        Alert informationAlert = new Alert(Alert.AlertType.INFORMATION);
+        informationAlert.setTitle(bundle.getString("edit.account"));
+        informationAlert.setHeaderText(bundle.getString("change.username.header"));
+        informationAlert.setContentText(bundle.getString("change.content"));
+        informationAlert.showAndWait();
+    }
+
+    public static void changePasswordDialog() {
+        Alert informationAlert = new Alert(Alert.AlertType.INFORMATION);
+        informationAlert.setTitle(bundle.getString("edit.account"));
+        informationAlert.setHeaderText(bundle.getString("change.password.header"));
+        informationAlert.setContentText(bundle.getString("change.content"));
+        informationAlert.showAndWait();
+    }
+
     public static String editDialog(String value) {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle(bundle.getString("edit.title"));

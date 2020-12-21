@@ -5,7 +5,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.Date;
 
-@DatabaseTable(tableName = "planning expenses")
+@DatabaseTable(tableName = "planning_expenses")
 public class PlanningExpenses implements BaseModel{
 
     public PlanningExpenses() {
@@ -14,6 +14,9 @@ public class PlanningExpenses implements BaseModel{
 
     @DatabaseField(generatedId = true)
     private int id;
+
+    @DatabaseField(canBeNull = false)
+    private String username;
 
     @DatabaseField(format = "yyyy.MM.dd")
     private Date date;
@@ -36,6 +39,14 @@ public class PlanningExpenses implements BaseModel{
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Date getDate() {

@@ -67,14 +67,14 @@ public class DebitsController {
         this.debitModel = new DebitModel();
         try {
             this.debitModel.init();
-        } catch (ApplicationException e) {
+        } catch (SQLException e) {
             DialogUtils.errorDialog(e.getMessage());
         }
 
         this.categoryModel = new CategoryModel();
         try {
             categoryModel.init();
-        } catch (ApplicationException e) {
+        } catch (SQLException e) {
             DialogUtils.errorDialog(e.getMessage());
         }
 
@@ -124,7 +124,7 @@ public class DebitsController {
         try {
             categoryModel.saveCategoryInDataBase(addCategoryTextField.getText());
 
-        } catch (ApplicationException e) {
+        } catch (ApplicationException | SQLException e) {
             DialogUtils.errorDialog(e.getMessage());
         }
         addCategoryTextField.clear();
@@ -137,7 +137,7 @@ public class DebitsController {
             this.categoryModel.getCategoryFxObjectProperty().setName(newEditCategory);
             try {
                 this.categoryModel.updateCategoryInDataBase();
-            } catch (ApplicationException e) {
+            } catch (ApplicationException | SQLException e) {
                 DialogUtils.errorDialog(e.getMessage());
             }
         }
@@ -152,7 +152,7 @@ public class DebitsController {
     public void onActionRemoveDebitCategory() {
         try {
             this.categoryModel.deleteCategoryById();
-        } catch (ApplicationException e) {
+        } catch (ApplicationException | SQLException e) {
             DialogUtils.errorDialog(e.getMessage());
         }
     }
@@ -198,7 +198,7 @@ public class DebitsController {
         this.debitModel.getDebitFxObjectPropertyEdit().setDescriptionProperty(debitFxStringCellEditEvent.getNewValue());
         try {
             this.debitModel.updateDescriptionInDataBase(debitFxStringCellEditEvent.getNewValue());
-        } catch (ApplicationException e) {
+        } catch (ApplicationException | SQLException e) {
             DialogUtils.errorDialog(e.getMessage());
         }
     }

@@ -12,6 +12,7 @@ import sample.database.modelFx.SetBudgetModel;
 import sample.utils.DialogUtils;
 import sample.utils.exceptions.ApplicationException;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class PlanningExpensesController {
@@ -52,7 +53,7 @@ public class PlanningExpensesController {
         this.planningExpensesModel = new PlanningExpensesModel();
         try {
             planningExpensesModel.init();
-        } catch (ApplicationException e) {
+        } catch (SQLException e) {
             DialogUtils.errorDialog(e.getMessage());
         }
 
@@ -91,7 +92,7 @@ public class PlanningExpensesController {
     public void onActionAddPlanningExpense() {
         try {
             this.planningExpensesModel.savePlanningExpenseInDataBase();
-        } catch (ApplicationException e) {
+        } catch (ApplicationException | SQLException e) {
             DialogUtils.errorDialog(e.getMessage());
         }
         clearFields();
@@ -106,7 +107,7 @@ public class PlanningExpensesController {
     public void onActionDeletePlanningExpense() {
         try {
             this.planningExpensesModel.deletePlanningExpenseInDataBase();
-        } catch (ApplicationException e) {
+        } catch (ApplicationException | SQLException e) {
             DialogUtils.errorDialog(e.getMessage());
         }
     }
@@ -116,7 +117,7 @@ public class PlanningExpensesController {
         this.planningExpensesModel.getPlanningExpensesFxObjectPropertyEdit().setDescriptionProperty(planningExpensesFxStringCellEditEvent.getNewValue());
         try {
             this.planningExpensesModel.updateDescriptionInDataBase(planningExpensesFxStringCellEditEvent.getNewValue());
-        } catch (ApplicationException e) {
+        } catch (ApplicationException | SQLException e) {
             DialogUtils.errorDialog(e.getMessage());
         }
     }

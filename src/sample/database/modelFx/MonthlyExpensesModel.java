@@ -17,6 +17,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class MonthlyExpensesModel {
 
+    LoginModel loginModel = new LoginModel();
+
     DecimalFormat decimalFormat = new DecimalFormat("#.00");
 
     public void init() {
@@ -25,37 +27,27 @@ public class MonthlyExpensesModel {
     public void saveDebitToMonthlyExpensesInDataBase(int debitYear, int debitMonth, double amount) throws SQLException {
         Dao<MonthlyExpenses, Integer> dao = DaoManager.createDao(DbManager.getConnectionSource(), MonthlyExpenses.class);
         AtomicBoolean done = new AtomicBoolean(false);
-        QueryBuilder<MonthlyExpenses, Integer> yearQueryBuilder = dao.queryBuilder();
-        yearQueryBuilder.where().eq("year", debitYear);
-        PreparedQuery<MonthlyExpenses> prepareYear = yearQueryBuilder.prepare();
-        List<MonthlyExpenses> dateYear = dao.query(prepareYear);
-        dateYear.forEach(year -> {
-            QueryBuilder<MonthlyExpenses, Integer> monthQueryBuilder = dao.queryBuilder();
+        QueryBuilder<MonthlyExpenses, Integer> monthlyExpensesQueryBuilder = dao.queryBuilder();
+        monthlyExpensesQueryBuilder.where().eq("year", debitYear)
+                .and().eq("month", debitMonth)
+                .and().eq("username", this.loginModel.getLoggedUserFromDataBase());
+        PreparedQuery<MonthlyExpenses> prepareMonthlyExpenses = monthlyExpensesQueryBuilder.prepare();
+        List<MonthlyExpenses> monthlyExpenses = dao.query(prepareMonthlyExpenses);
+        monthlyExpenses.forEach(monthlyExpense -> {
             try {
-                monthQueryBuilder.where().eq("month", debitMonth);
-                PreparedQuery<MonthlyExpenses> prepareMonth = monthQueryBuilder.prepare();
-                List<MonthlyExpenses> dateMonth = dao.query(prepareMonth);
-                dateMonth.forEach(month -> {
-                    MonthlyExpenses monthlyExpenses = null;
-                    try {
-                        monthlyExpenses = dao.queryForId(month.getId());
-                    } catch (SQLException e) {
-                        DialogUtils.errorDialog(e.getMessage());
-                    }
-                    monthlyExpenses.setSumOfExpensesThisMonth(Double.parseDouble(this.decimalFormat.format(monthlyExpenses.getSumOfExpensesThisMonth() + amount)));
-                    try {
-                        dao.update(monthlyExpenses);
-                    } catch (SQLException e) {
-                        DialogUtils.errorDialog(e.getMessage());
-                    }
-                    done.set(true);
-                });
+                monthlyExpense.setUsername(this.loginModel.getLoggedUserFromDataBase());
+                monthlyExpense.setSumOfExpensesThisMonth(Double.parseDouble
+                        (this.decimalFormat.format(monthlyExpense.getSumOfExpensesThisMonth() + amount)));
+                dao.update(monthlyExpense);
             } catch (SQLException e) {
                 DialogUtils.errorDialog(e.getMessage());
             }
+            done.set(true);
         });
+
         if (!done.get()) {
             MonthlyExpenses newMonthlyExpenses = new MonthlyExpenses();
+            newMonthlyExpenses.setUsername(this.loginModel.getLoggedUserFromDataBase());
             newMonthlyExpenses.setYear(debitYear);
             newMonthlyExpenses.setMonth(debitMonth);
             newMonthlyExpenses.setSumOfExpensesThisMonth(Double.parseDouble(this.decimalFormat.format(amount)));
@@ -66,34 +58,20 @@ public class MonthlyExpensesModel {
 
     public void removeDebitFromMonthlyExpensesInDataBase(int debitYear, int debitMonth, double amount) throws SQLException {
         Dao<MonthlyExpenses, Integer> dao = DaoManager.createDao(DbManager.getConnectionSource(), MonthlyExpenses.class);
-        QueryBuilder<MonthlyExpenses, Integer> yearQueryBuilder = dao.queryBuilder();
-        yearQueryBuilder.where().eq("year", debitYear);
-        PreparedQuery<MonthlyExpenses> prepareYear = yearQueryBuilder.prepare();
-        List<MonthlyExpenses> dateYear = dao.query(prepareYear);
-        dateYear.forEach(year -> {
-            QueryBuilder<MonthlyExpenses, Integer> monthQueryBuilder = dao.queryBuilder();
+        QueryBuilder<MonthlyExpenses, Integer> monthlyExpensesQueryBuilder = dao.queryBuilder();
+        monthlyExpensesQueryBuilder.where().eq("year", debitYear)
+                .and().eq("month", debitMonth)
+                .and().eq("username", this.loginModel.getLoggedUserFromDataBase());
+        PreparedQuery<MonthlyExpenses> prepareMonthlyExpenses = monthlyExpensesQueryBuilder.prepare();
+        List<MonthlyExpenses> monthlyExpenses = dao.query(prepareMonthlyExpenses);
+        monthlyExpenses.forEach(monthlyExpense -> {
+            monthlyExpense.setSumOfExpensesThisMonth(Double.parseDouble(
+                    this.decimalFormat.format(monthlyExpense.getSumOfExpensesThisMonth() - amount)));
             try {
-                monthQueryBuilder.where().eq("month", debitMonth);
-                PreparedQuery<MonthlyExpenses> prepareMonth = monthQueryBuilder.prepare();
-                List<MonthlyExpenses> dateMonth = dao.query(prepareMonth);
-                dateMonth.forEach(month -> {
-                    MonthlyExpenses monthlyExpenses = null;
-                    try {
-                        monthlyExpenses = dao.queryForId(month.getId());
-                    } catch (SQLException e) {
-                        DialogUtils.errorDialog(e.getMessage());
-                    }
-                    monthlyExpenses.setSumOfExpensesThisMonth(Double.parseDouble(this.decimalFormat.format(monthlyExpenses.getSumOfExpensesThisMonth() - amount)));
-                    try {
-                        dao.update(monthlyExpenses);
-                        if (monthlyExpenses.getSumOfExpensesThisMonth() == 0)
-                        {
-                            dao.deleteById(month.getId());
-                        }
-                    } catch (SQLException e) {
-                        DialogUtils.errorDialog(e.getMessage());
-                    }
-                });
+                dao.update(monthlyExpense);
+                if (monthlyExpense.getSumOfExpensesThisMonth() == 0) {
+                    dao.deleteById(monthlyExpense.getId());
+                }
             } catch (SQLException e) {
                 DialogUtils.errorDialog(e.getMessage());
             }
@@ -103,25 +81,15 @@ public class MonthlyExpensesModel {
 
     public int getIdActualMonthlyExpensesFromDataBase(int actualYear, int actualMonth) throws SQLException {
         Dao<MonthlyExpenses, Integer> dao = DaoManager.createDao(DbManager.getConnectionSource(), MonthlyExpenses.class);
-
         AtomicInteger id = new AtomicInteger();
-
-        QueryBuilder<MonthlyExpenses, Integer> yearQueryBuilder = dao.queryBuilder();
-        yearQueryBuilder.where().eq("year", actualYear);
-        PreparedQuery<MonthlyExpenses> prepareYear = yearQueryBuilder.prepare();
-        List<MonthlyExpenses> dateYear = dao.query(prepareYear);
-        dateYear.forEach(year -> {
-            QueryBuilder<MonthlyExpenses, Integer> monthQueryBuilder = dao.queryBuilder();
-            try {
-                monthQueryBuilder.where().eq("month", actualMonth);
-                PreparedQuery<MonthlyExpenses> prepareMonth = monthQueryBuilder.prepare();
-                List<MonthlyExpenses> dateMonth = dao.query(prepareMonth);
-                dateMonth.forEach(month -> {
-                    id.set(month.getId());
-                });
-            } catch (SQLException e) {
-                DialogUtils.errorDialog(e.getMessage());
-            }
+        QueryBuilder<MonthlyExpenses, Integer> monthlyExpensesQueryBuilder = dao.queryBuilder();
+        monthlyExpensesQueryBuilder.where().eq("year", actualYear)
+                .and().eq("month", actualMonth)
+                .and().eq("username", this.loginModel.getLoggedUserFromDataBase());
+        PreparedQuery<MonthlyExpenses> prepareMonthlyExpenses = monthlyExpensesQueryBuilder.prepare();
+        List<MonthlyExpenses> monthlyExpenses = dao.query(prepareMonthlyExpenses);
+        monthlyExpenses.forEach(monthlyExpense -> {
+                            id.set(monthlyExpense.getId());
         });
         DbManager.closeConnectionSource();
         return id.get();
@@ -131,7 +99,7 @@ public class MonthlyExpensesModel {
         Dao<MonthlyExpenses, Integer> dao = DaoManager.createDao(DbManager.getConnectionSource(), MonthlyExpenses.class);
         AtomicReference<Double> sum = new AtomicReference<>((double) 0);
         QueryBuilder<MonthlyExpenses, Integer> expensesQueryBuilder = dao.queryBuilder();
-        expensesQueryBuilder.selectColumns("sum of expenses this month");
+        expensesQueryBuilder.where().eq("username", this.loginModel.getLoggedUserFromDataBase());
         PreparedQuery<MonthlyExpenses> prepareExpenses = expensesQueryBuilder.prepare();
         List<MonthlyExpenses> expenses = dao.query(prepareExpenses);
         expenses.forEach(e -> {

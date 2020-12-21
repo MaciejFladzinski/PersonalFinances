@@ -8,6 +8,7 @@ import javafx.beans.property.StringProperty;
 public class CategoryFx {
 
     private IntegerProperty id = new SimpleIntegerProperty();
+    private StringProperty username = new SimpleStringProperty();
     private StringProperty name = new SimpleStringProperty();
 
     public int getId() {
@@ -20,6 +21,18 @@ public class CategoryFx {
 
     public void setId(int id) {
         this.id.set(id);
+    }
+
+    public String getUsername() {
+        return username.get();
+    }
+
+    public StringProperty usernameProperty() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username.set(username);
     }
 
     public String getName() {

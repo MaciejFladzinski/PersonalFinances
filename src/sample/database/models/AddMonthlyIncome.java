@@ -3,14 +3,17 @@ package sample.database.models;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "add monthly income")
+@DatabaseTable(tableName = "add_monthly_income")
 public class AddMonthlyIncome implements BaseModel {
 
     public AddMonthlyIncome() {
     }
 
-    @DatabaseField(canBeNull = false, generatedId = true)
+    @DatabaseField(generatedId = true)
     private int id;
+
+    @DatabaseField(canBeNull = false)
+    private String username;
 
     @DatabaseField(canBeNull = false)
     private int year;
@@ -27,6 +30,14 @@ public class AddMonthlyIncome implements BaseModel {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public int getYear() {

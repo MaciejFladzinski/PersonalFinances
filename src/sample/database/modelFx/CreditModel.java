@@ -1,27 +1,37 @@
 package sample.database.modelFx;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import sample.database.dao.CreditDao;
+import sample.database.dbutils.DbManager;
 import sample.database.models.Credit;
 import sample.utils.converters.CreditConverter;
 import sample.utils.exceptions.ApplicationException;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class CreditModel {
+
+    LoginModel loginModel = new LoginModel();
 
     private ObservableList<CreditFx> creditFxObservableList = FXCollections.observableArrayList();
 
     private ObjectProperty<CreditFx> creditFxObjectProperty = new SimpleObjectProperty<>(new CreditFx());
     private ObjectProperty<CreditFx> creditFxObjectPropertyEdit = new SimpleObjectProperty<>(new CreditFx());
 
-    public void init() throws ApplicationException {
-        CreditDao creditDao = new CreditDao();
-
-        List<Credit> credits = creditDao.queryForAll(Credit.class);
+    public void init() throws SQLException {
+        Dao<Credit, Integer> creditDao = DaoManager.createDao(DbManager.getConnectionSource(), Credit.class);
+        QueryBuilder<Credit, Integer> creditsQueryBuilder = creditDao.queryBuilder();
+        creditsQueryBuilder.where().eq("username", this.loginModel.getLoggedUserFromDataBase());
+        PreparedQuery<Credit> prepareCredits = creditsQueryBuilder.prepare();
+        List<Credit> credits = creditDao.query(prepareCredits);
         this.creditFxObservableList.clear();
         credits.forEach(credit -> {
             CreditFx creditFx = CreditConverter.convertToCreditFX(credit);
@@ -29,14 +39,14 @@ public class CreditModel {
         });
     }
 
-    public void saveCreditInDataBase() throws ApplicationException {
+    public void saveCreditInDataBase() throws ApplicationException, SQLException {
         CreditDao creditDao = new CreditDao();
         Credit credit = CreditConverter.convertCredit(this.getCreditFxObjectProperty());
         creditDao.createOrUpdate(credit);
         init();
     }
 
-    public void updateDescriptionInDataBase(String description) throws ApplicationException {
+    public void updateDescriptionInDataBase(String description) throws ApplicationException, SQLException {
         CreditDao creditDao = new CreditDao();
 
         Credit tempCredit = creditDao.findById(Credit.class, getCreditFxObjectPropertyEdit().getIdProperty());
@@ -45,7 +55,7 @@ public class CreditModel {
         init();
     }
 
-    public void deleteCreditFromDataBase() throws ApplicationException {
+    public void deleteCreditFromDataBase() throws ApplicationException, SQLException {
         CreditDao creditDao = new CreditDao();
         creditDao.deleteById(Credit.class, this.getCreditFxObjectPropertyEdit().getIdProperty());
         init();

@@ -47,7 +47,7 @@ public class CreditsController {
         this.creditModel = new CreditModel();
         try {
             creditModel.init();
-        } catch (ApplicationException e) {
+        } catch (SQLException e) {
             DialogUtils.errorDialog(e.getMessage());
         }
 
@@ -115,7 +115,7 @@ public class CreditsController {
         this.creditModel.getCreditFxObjectPropertyEdit().setDescriptionProperty(creditFxStringCellEditEvent.getNewValue());
         try {
             this.creditModel.updateDescriptionInDataBase(creditFxStringCellEditEvent.getNewValue());
-        } catch (ApplicationException e) {
+        } catch (ApplicationException | SQLException e) {
             DialogUtils.errorDialog(e.getMessage());
         }
     }
