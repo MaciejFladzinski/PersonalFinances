@@ -55,6 +55,14 @@ public class DialogUtils {
         informationAlert.showAndWait();
     }
 
+    public static void amountError() {
+        Alert informationAlert = new Alert(Alert.AlertType.ERROR);
+        informationAlert.setTitle(bundle.getString("error.title"));
+        informationAlert.setHeaderText(bundle.getString("error.header"));
+        informationAlert.setContentText(bundle.getString("add.credit.error.content"));
+        informationAlert.showAndWait();
+    }
+
     public static void changeFirstNameDialog() {
         Alert informationAlert = new Alert(Alert.AlertType.INFORMATION);
         informationAlert.setTitle(bundle.getString("edit.account"));

@@ -151,13 +151,17 @@ public class MainFinancialInformationsController {
 
     @FXML
     public void onActionUpdateAccountBalance() {
-        if (confirmCheckBox.isSelected())
+        if (confirmCheckBox.isSelected() && (this.editFinancialInfoTextField.getText().matches("[\\d]+") ||
+                this.editFinancialInfoTextField.getText().matches("[\\d]*[.][\\d]*")))
         {
             try {
                 this.setBudgetModel.updateAccountBalanceInDataBase(Double.parseDouble(editFinancialInfoTextField.getText()));
             } catch (SQLException e) {
                 DialogUtils.errorDialog(e.getMessage());
             }
+        }
+        else {
+            DialogUtils.amountError();
         }
         clearEditBudget();
         try {
@@ -169,13 +173,16 @@ public class MainFinancialInformationsController {
 
     @FXML
     public void onActionUpdateMonthlyIncome() {
-        if (confirmCheckBox.isSelected())
-        {
+        if (confirmCheckBox.isSelected() && (this.editFinancialInfoTextField.getText().matches("[\\d]+") ||
+                this.editFinancialInfoTextField.getText().matches("[\\d]*[.][\\d]*"))) {
             try {
                 this.setBudgetModel.updateMonthlyIncomeInDataBase(Double.parseDouble(editFinancialInfoTextField.getText()));
             } catch (SQLException e) {
                 DialogUtils.errorDialog(e.getMessage());
             }
+        }
+        else {
+            DialogUtils.amountError();
         }
         clearEditBudget();
         try {

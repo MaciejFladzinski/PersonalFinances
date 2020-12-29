@@ -72,15 +72,22 @@ public class SetBudgetController {
 
     @FXML
     public void onActionSetBudget(ActionEvent actionEvent) {
-        double accountBalance = Double.parseDouble(setAccountBalanceTextField.getText());
-        double monthlyIncome = Double.parseDouble(setMonthlyIncomeTextField.getText());
-        try {
-            this.setBudgetModel.saveBudgetInDataBase(accountBalance, monthlyIncome);
-        } catch (SQLException e) {
-            DialogUtils.errorDialog(e.getMessage());
+        if ((this.setMonthlyIncomeTextField.getText().matches("[\\d]+") ||
+                this.setMonthlyIncomeTextField.getText().matches("[\\d]*[.][\\d]*")) &&
+                (this.setAccountBalanceTextField.getText().matches("[\\d]+") ||
+                this.setAccountBalanceTextField.getText().matches("[\\d]*[.][\\d]*"))) {
+            try {
+                double accountBalance = Double.parseDouble(setAccountBalanceTextField.getText());
+                double monthlyIncome = Double.parseDouble(setMonthlyIncomeTextField.getText());
+                this.setBudgetModel.saveBudgetInDataBase(accountBalance, monthlyIncome);
+                FxmlUtils.newSceneFxmlLoader(BORDER_PANE_MAIN_FXML);
+                FxmlUtils.closeStage(actionEvent);
+            } catch (SQLException e) {
+                DialogUtils.errorDialog(e.getMessage());
+            }
+        } else {
+            DialogUtils.amountError();
         }
-        FxmlUtils.newSceneFxmlLoader(BORDER_PANE_MAIN_FXML);
-        FxmlUtils.closeStage(actionEvent);
     }
 
     @FXML

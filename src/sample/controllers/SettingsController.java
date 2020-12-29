@@ -100,23 +100,33 @@ public class SettingsController {
 
     @FXML
     public void onActionChangeFirstName() {
-        try {
-            this.loginModel.updateFirstNameInDataBase(this.firstNameTextField.getText());
-            DialogUtils.changeFirstNameDialog();
-            this.firstNameTextField.clear();
-        } catch (SQLException e) {
-            DialogUtils.errorDialog(e.getMessage());
+        if (this.firstNameTextField.getText().matches("[A-Z][a-ząćńśźż]+")) {
+            try {
+                this.loginModel.updateFirstNameInDataBase(this.firstNameTextField.getText());
+                DialogUtils.changeFirstNameDialog();
+                this.firstNameTextField.clear();
+                this.errorLabel.setText("");
+            } catch (SQLException e) {
+                DialogUtils.errorDialog(e.getMessage());
+            }
+        } else {
+            this.errorLabel.setText(bundle.getString("error.first.name"));
         }
     }
 
     @FXML
     public void onActionChangeLastName() {
-        try {
-            this.loginModel.updateLastNameInDataBase(this.lastNameTextField.getText());
-            DialogUtils.changeLastNameDialog();
-            this.lastNameTextField.clear();
-        } catch (SQLException e) {
-            DialogUtils.errorDialog(e.getMessage());
+        if (this.lastNameTextField.getText().matches("[A-Z][a-ząćńśźż]+")) {
+            try {
+                this.loginModel.updateLastNameInDataBase(this.lastNameTextField.getText());
+                DialogUtils.changeLastNameDialog();
+                this.lastNameTextField.clear();
+                this.errorLabel.setText("");
+            } catch (SQLException e) {
+                DialogUtils.errorDialog(e.getMessage());
+            }
+        } else {
+            this.errorLabel.setText(bundle.getString("error.last.name"));
         }
     }
 

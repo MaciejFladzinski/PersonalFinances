@@ -90,10 +90,15 @@ public class PlanningExpensesController {
 
     @FXML
     public void onActionAddPlanningExpense() {
-        try {
-            this.planningExpensesModel.savePlanningExpenseInDataBase();
-        } catch (ApplicationException | SQLException e) {
-            DialogUtils.errorDialog(e.getMessage());
+        if (this.amountTextField.getText().matches("[\\d]+") ||
+                this.amountTextField.getText().matches("[\\d]*[.][\\d]*")) {
+            try {
+                this.planningExpensesModel.savePlanningExpenseInDataBase();
+            } catch (ApplicationException | SQLException e) {
+                DialogUtils.errorDialog(e.getMessage());
+            }
+        } else {
+            DialogUtils.amountError();
         }
         clearFields();
     }

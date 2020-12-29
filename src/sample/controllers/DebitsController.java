@@ -161,12 +161,17 @@ public class DebitsController {
     @FXML
     public void onActionAddDebit() {
         try {
-            this.debitModel.saveDebitInDataBase();
-            this.setBudgetModel.substractAccountBalanceInDataBase(this.debitModel.getDebitFxObjectProperty().getAmountProperty());
-            this.monthlyExpensesModel.saveDebitToMonthlyExpensesInDataBase(
-                    this.debitModel.getDebitFxObjectProperty().getAddedDateProperty().getYear(),
-                    this.debitModel.getDebitFxObjectProperty().getAddedDateProperty().getMonth().getValue(),
-                    this.debitModel.getDebitFxObjectProperty().getAmountProperty());
+            if (this.amountTextField.getText().matches("[\\d]+") ||
+                    this.amountTextField.getText().matches("[\\d]*[.][\\d]*")) {
+                this.debitModel.saveDebitInDataBase();
+                this.setBudgetModel.substractAccountBalanceInDataBase(this.debitModel.getDebitFxObjectProperty().getAmountProperty());
+                this.monthlyExpensesModel.saveDebitToMonthlyExpensesInDataBase(
+                        this.debitModel.getDebitFxObjectProperty().getAddedDateProperty().getYear(),
+                        this.debitModel.getDebitFxObjectProperty().getAddedDateProperty().getMonth().getValue(),
+                        this.debitModel.getDebitFxObjectProperty().getAmountProperty());
+            } else {
+                DialogUtils.amountError();
+            }
         } catch (ApplicationException | SQLException e) {
             DialogUtils.errorDialog(e.getMessage());
         }

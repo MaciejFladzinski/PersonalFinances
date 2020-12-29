@@ -38,7 +38,6 @@ public class CreateAccountController {
     @FXML
     public void initialize() {
         this.createAccountModel = new CreateAccountModel();
-
         bindings();
     }
 
@@ -51,7 +50,9 @@ public class CreateAccountController {
     }
 
     public void onActionCreateNewAccount(ActionEvent actionEvent) {
-        if (this.passwordField.getText().equals(this.confirmPasswordField.getText())) {
+        if (this.passwordField.getText().equals(this.confirmPasswordField.getText()) &&
+                this.firstNameTextField.getText().matches("[A-Z][a-ząćńśźż]+") &&
+                this.lastNameTextField.getText().matches("[A-Z][a-z,ąćńśźż]+")) {
             try {
                 if (!this.createAccountModel.checkIfExistUserInDataBase(this.usernameTextField.getText())) {
                     try {
@@ -74,6 +75,8 @@ public class CreateAccountController {
             }
         } else {
             this.errorLabel.setText(bundle.getString("create.account.error.password"));
+            this.firstNameTextField.clear();
+            this.lastNameTextField.clear();
             this.passwordField.clear();
             this.confirmPasswordField.clear();
         }

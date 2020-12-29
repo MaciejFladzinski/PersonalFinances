@@ -86,8 +86,14 @@ public class CreditsController {
     @FXML
     public void onActionAddCredit() {
         try {
-            this.creditModel.saveCreditInDataBase();
-            this.setBudgetModel.addAccountBalanceInDataBase(this.creditModel.getCreditFxObjectProperty().getAmountProperty());
+            if (this.amountTextField.getText().matches("[\\d]+") ||
+                    this.amountTextField.getText().matches("[\\d]*[.][\\d]*")) {
+                this.creditModel.saveCreditInDataBase();
+                this.setBudgetModel.addAccountBalanceInDataBase(this.creditModel.getCreditFxObjectProperty().getAmountProperty());
+            }
+            else {
+                DialogUtils.amountError();
+            }
         } catch (ApplicationException | SQLException e) {
             DialogUtils.errorDialog(e.getMessage());
         }
