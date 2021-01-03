@@ -51,8 +51,8 @@ public class CreateAccountController {
 
     public void onActionCreateNewAccount(ActionEvent actionEvent) {
         if (this.passwordField.getText().equals(this.confirmPasswordField.getText()) &&
-                this.firstNameTextField.getText().matches("[A-Z][a-ząćńśźż]+") &&
-                this.lastNameTextField.getText().matches("[A-Z][a-z,ąćńśźż]+")) {
+                this.firstNameTextField.getText().matches("[A-ZĄĆŃŚŹŻ][a-ząćńśźż]+") &&
+                this.lastNameTextField.getText().matches("[A-ZĄĆŃŚŹŻ][a-ząćńśźż]+")) {
             try {
                 if (!this.createAccountModel.checkIfExistUserInDataBase(this.usernameTextField.getText())) {
                     try {

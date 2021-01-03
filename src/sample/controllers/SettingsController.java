@@ -100,7 +100,7 @@ public class SettingsController {
 
     @FXML
     public void onActionChangeFirstName() {
-        if (this.firstNameTextField.getText().matches("[A-Z][a-ząćńśźż]+")) {
+        if (this.firstNameTextField.getText().matches("[A-ZĄĆŃŚŹŻ][a-ząćńśźż]+")) {
             try {
                 this.loginModel.updateFirstNameInDataBase(this.firstNameTextField.getText());
                 DialogUtils.changeFirstNameDialog();
@@ -116,7 +116,7 @@ public class SettingsController {
 
     @FXML
     public void onActionChangeLastName() {
-        if (this.lastNameTextField.getText().matches("[A-Z][a-ząćńśźż]+")) {
+        if (this.lastNameTextField.getText().matches("[A-ZĄĆŃŚŹŻ][a-ząćńśźż]+")) {
             try {
                 this.loginModel.updateLastNameInDataBase(this.lastNameTextField.getText());
                 DialogUtils.changeLastNameDialog();
