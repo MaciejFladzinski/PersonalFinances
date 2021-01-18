@@ -96,10 +96,10 @@ public class PlanningExpensesModel {
             double timeNeeded = missing / (actualMonthlyIncome - actualAverageOfMonthlyExpenses);
             int monthsNeeded = (int) Math.ceil(timeNeeded);
             if (monthsNeeded == 1) {
-                return bundle.getString("comment.planning.expenses") + monthsNeeded + bundle.getString("comment.month");
+                return bundle.getString("comment.planning.expenses") + monthsNeeded + " " + bundle.getString("comment.month");
             }
             else {
-                return bundle.getString("comment.planning.expenses") + monthsNeeded + bundle.getString("comment.months");
+                return bundle.getString("comment.planning.expenses") + monthsNeeded +  " " + bundle.getString("comment.months");
             }
         }
     }

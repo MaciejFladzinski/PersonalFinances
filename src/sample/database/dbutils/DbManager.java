@@ -15,7 +15,7 @@ public class DbManager {
 
     //private static final String JDBC_DRIVER_HD = "jdbc:sqlite:database.db";
 
-    private static final String URL = "jdbc:mysql://77.79.251.52/pawelskie_personal";
+    private static final String URL = "jdbc:mysql://77.79.251.52/pawelskie_personal?autoReconnect=true";
     private static final String USER = "pawelskie_pers";
     private static final String PASSWORD = "Jbe231fdA!";
 

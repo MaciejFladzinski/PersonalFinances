@@ -41,7 +41,7 @@ public class CreditModel {
 
     public void saveCreditInDataBase() throws ApplicationException, SQLException {
         CreditDao creditDao = new CreditDao();
-        Credit credit = CreditConverter.convertCredit(this.getCreditFxObjectProperty());
+        Credit credit = CreditConverter.convertToCredit(this.getCreditFxObjectProperty());
         creditDao.createOrUpdate(credit);
         init();
     }

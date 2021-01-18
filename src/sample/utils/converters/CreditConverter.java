@@ -11,7 +11,7 @@ import java.text.DecimalFormat;
 
 public class CreditConverter {
 
-    public static Credit convertCredit(CreditFx creditFx) {
+    public static Credit convertToCredit(CreditFx creditFx) {
         Credit credit = new Credit();
 
         credit.setId(creditFx.getIdProperty());
