@@ -11,10 +11,9 @@ The main purpose of the application, in addition to allowing the user to save an
 
 ## Technologies
 * Java 14,
-* libraries:
-            - javafx-sdk-14.0.1,
-            - mysql-connector-java:8.0.22,
-            - ormlite-jdbc:4.48.
+* javafx-sdk library version: 14.0.1,
+* mysql-connector-java library version: 8.0.22,
+* ormlite-jdbc library version: 4.48.
 
 ## Setup
 If compilation failed, the localized path to the javafx-sdk library is probably missing. It should be downloaded from the official website and added in the tab "configurations" -> "VM options".
